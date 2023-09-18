@@ -47,7 +47,7 @@ export class HashHistory extends History {
       })
     }
     const eventType = supportsPushState ? 'popstate' : 'hashchange'
-    window.addEventListener(
+    window.addEventListener( // 监听变化触发事件
       eventType,
       handleRoutingEvent
     )

@@ -38,15 +38,15 @@ export default class VueRouter {
   afterHooks: Array<?AfterNavigationHook>
 
   constructor (options: RouterOptions = {}) {
-    this.app = null
-    this.apps = []
-    this.options = options
+    this.app = null // Vue实例
+    this.apps = [] // 保存持有 $options.router 属性的 Vue 实例
+    this.options = options // 路由参数配置
     this.beforeHooks = []
     this.resolveHooks = []
     this.afterHooks = []
-    this.matcher = createMatcher(options.routes || [], this)
+    this.matcher = createMatcher(options.routes || [], this) // 路由匹配器
 
-    let mode = options.mode || 'hash'
+    let mode = options.mode || 'hash' // 路由创建的模式
     this.fallback =
       mode === 'history' && !supportsPushState && options.fallback !== false
     if (this.fallback) {
@@ -82,7 +82,7 @@ export default class VueRouter {
     return this.history && this.history.current
   }
 
-  init (app: any /* Vue component instance */) {
+  init (app: any /* Vue component instance */) { // 传入Vue实例
     process.env.NODE_ENV !== 'production' &&
       assert(
         install.installed,

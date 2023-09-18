@@ -18,7 +18,7 @@ export function createMatcher (
   router: VueRouter
 ): Matcher {
   const { pathList, pathMap, nameMap } = createRouteMap(routes)
-
+  console.log(createRouteMap(routes))
   function addRoutes (routes) {
     createRouteMap(routes, pathList, pathMap, nameMap)
   }
@@ -30,8 +30,8 @@ export function createMatcher (
   ): Route {
     const location = normalizeLocation(raw, currentRoute, false, router)
     const { name } = location
-
-    if (name) {
+    // console.log(`%c ${location.path}`, 'color: blue; font-size: 18px; background: pink;')
+    if (name) { // 判断路由是否具有name
       const record = nameMap[name]
       if (process.env.NODE_ENV !== 'production') {
         warn(record, `Route with name '${name}' does not exist`)

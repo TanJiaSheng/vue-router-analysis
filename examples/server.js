@@ -28,7 +28,7 @@ fs.readdirSync(__dirname).forEach(file => {
 app.use(express.static(__dirname))
 
 const host = process.env.HOST || 'localhost'
-const port = process.env.PORT || 8080
+const port = process.env.PORT || process.env.npm_config_env_PROT || 8080
 module.exports = app.listen(port, host, () => {
   console.log(`Server listening on http://${host}:${port}, Ctrl+C to stop`)
 })

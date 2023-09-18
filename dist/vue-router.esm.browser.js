@@ -1,6 +1,6 @@
 /*!
   * vue-router v3.4.0
-  * (c) 2020 Evan You
+  * (c) 2023 Evan You
   * @license MIT
   */
 /*  */
@@ -1189,9 +1189,12 @@ function findAnchor (children) {
   }
 }
 
+// 全局变量接收Vue实例，不用单独引入Vue从而减少包体积
 let _Vue;
 
 function install (Vue) {
+  // 确保 install 逻辑只执行一次，用了 install.installed 变量做已安装的标志位
+  // 跟Vue的初始化类似，单例模式下确保每次使用的都是同一个对象模型
   if (install.installed && _Vue === Vue) return
   install.installed = true;
 
@@ -1206,12 +1209,14 @@ function install (Vue) {
     }
   };
 
+  // 通过Vue.mixin把router的beforeCreate和destroyed函数注入到每一个组件中。
+  // 因此在每个组件中都可以通过this.$router拿到vue-router实例
   Vue.mixin({
     beforeCreate () {
       if (isDef(this.$options.router)) {
         this._routerRoot = this;
         this._router = this.$options.router;
-        this._router.init(this);
+        this._router.init(this); // 初始化路由
         Vue.util.defineReactive(this, '_route', this._router.history.current);
       } else {
         this._routerRoot = (this.$parent && this.$parent._routerRoot) || this;
@@ -1223,6 +1228,7 @@ function install (Vue) {
     }
   });
 
+  // 实现路由变化的监听
   Object.defineProperty(Vue.prototype, '$router', {
     get () { return this._routerRoot._router }
   });
@@ -1231,6 +1237,7 @@ function install (Vue) {
     get () { return this._routerRoot._route }
   });
 
+  // 注册router的两个组件
   Vue.component('RouterView', View);
   Vue.component('RouterLink', Link);
 
@@ -1573,6 +1580,7 @@ function createMatcher (
       _normalized: true,
       path: aliasedPath
     });
+    console.log(location, matchAs);
     if (aliasedMatch) {
       const matched = aliasedMatch.matched;
       const aliasedRecord = matched[matched.length - 1];
@@ -2775,15 +2783,15 @@ class VueRouter {
   
 
   constructor (options = {}) {
-    this.app = null;
-    this.apps = [];
-    this.options = options;
+    this.app = null; // Vue实例
+    this.apps = []; // 保存持有 $options.router 属性的 Vue 实例
+    this.options = options; // 路由参数配置
     this.beforeHooks = [];
     this.resolveHooks = [];
     this.afterHooks = [];
-    this.matcher = createMatcher(options.routes || [], this);
+    this.matcher = createMatcher(options.routes || [], this); // 路由匹配器
 
-    let mode = options.mode || 'hash';
+    let mode = options.mode || 'hash'; // 路由创建的模式
     this.fallback =
       mode === 'history' && !supportsPushState && options.fallback !== false;
     if (this.fallback) {

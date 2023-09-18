@@ -10,7 +10,7 @@ export function createRouteMap (
   oldPathMap?: Dictionary<RouteRecord>,
   oldNameMap?: Dictionary<RouteRecord>
 ): {
-  pathList: Array<string>,
+  pathList: Array<string>, // 路由列表
   pathMap: Dictionary<RouteRecord>,
   nameMap: Dictionary<RouteRecord>
 } {
@@ -52,7 +52,7 @@ export function createRouteMap (
     nameMap
   }
 }
-
+// 添加路由记录
 function addRouteRecord (
   pathList: Array<string>,
   pathMap: Dictionary<RouteRecord>,
@@ -121,7 +121,7 @@ function addRouteRecord (
         )
       }
     }
-    route.children.forEach(child => {
+    route.children.forEach(child => { // 递归子节点
       const childMatchAs = matchAs
         ? cleanPath(`${matchAs}/${child.path}`)
         : undefined
@@ -129,12 +129,12 @@ function addRouteRecord (
     })
   }
 
-  if (!pathMap[record.path]) {
+  if (!pathMap[record.path]) { // 添加path:记录
     pathList.push(record.path)
     pathMap[record.path] = record
   }
 
-  if (route.alias !== undefined) {
+  if (route.alias !== undefined) { // 路由别名不为空
     const aliases = Array.isArray(route.alias) ? route.alias : [route.alias]
     for (let i = 0; i < aliases.length; ++i) {
       const alias = aliases[i]
